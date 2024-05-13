@@ -17,23 +17,15 @@
 #include <Servo.h>
 
 // PARAMETRI
-int a1 = 30; // RASTOJANIE OD SERVO 3 DO PENKALO VO MILIMETRI
-int b1 = 30; // RASTOJANIE OD SERVO 2 DO SERVO 3 VO MILIMETRI
+float a1 = 30; // RASTOJANIE OD 90 STEPENI AGOL DO SERVO 3 (SLIKA 2)
+float b1 = 30; // RASTOJANIE OD SERVO 2 DO 90 STEPENI AGOL (SLIKA 2)
+float a2 = 30; // RASTOJANIE OD SERVO 3 DO KRAJ NA PENKALOTO
 
-int greskaX = 0; // SLUZI ZA PODESUVANJE NA PENKALOTO (SLIKA 2)
-int greskaY = 0; // SLUZI ZA PODESUVANJE NA PENKALOTO (SLIKA 2)
 int greskaZ = 0; // SLUZI ZA PODESUVANJE NA PENKALOTO (SLIKA 2)
-
-int minimalenAgolZaServo1 = 0; // NE OSTAVA SERVO 1 DA ODI DO AGOL POMAL OD NAVEDENIOT
-int maksimalenAgolZaServo1 = 180; // NE OSTAVA SERVO 1 DA ODI DO AGOL POGOLEM OD NAVEDENIOT
-int minimalenAgolZaServo2 = 0; // NE OSTAVA SERVO 2 DA ODI DO AGOL POMAL OD NAVEDENIOT
-int maksimalenAgolZaServo2 = 180; // NE OSTAVA SERVO 2 DA ODI DO AGOL POGOLEM OD NAVEDENIOT
-int minimalenAgolZaServo3 = 0; // NE OSTAVA SERVO 3 DA ODI DO AGOL POMAL OD NAVEDENIOT
-int maksimalenAgolZaServo3 = 180; // NE OSTAVA SERVO 3 DA ODI DO AGOL POGOLEM OD NAVEDENIOT
 
 int pocetnaPozicijaZaServo1 = 90; // AGOL NA SERVO 1 PRI VKLUCUVANJE NA PROGRAMATA, I OTKAKO KE SE IZVRSI PROGRAMATA
 int pocetnaPozicijaZaServo2 = 90; // AGOL NA SERVO 2 PRI VKLUCUVANJE NA PROGRAMATA, I OTKAKO KE SE IZVRSI PROGRAMATA
-int pocetnaPozicijaZaServo3 = 90; // AGOL NA SERVO 3 PRI VKLUCUVANJE NA PROGRAMATA, I OTKAKO KE SE IZVRSI PROGRAMATA
+int pocetnaPozicijaZaServo3 = 180; // AGOL NA SERVO 3 PRI VKLUCUVANJE NA PROGRAMATA, I OTKAKO KE SE IZVRSI PROGRAMATA
 
 int servo1Pin = 9;
 int servo2Pin = 10;
@@ -54,11 +46,11 @@ int koordinatenOpsegZaY_Oska = 60;  // KOORDINATATA DA BIDE PAREN BROJ, koordina
 // PROMENLIVI
 Servo servo1, servo2, servo3;
 
-float a2, b2, c;
-float alfa1, alfa2, alfa = 90, beta = 90, gama = 90;
+float b2, c = sqrt(a1*a1 + b1*b1);
+float alfa1, alfa2, alfa = 90, beta1, beta2, beta = 90, gama = 90;
 float alfaPrethodno, betaPrethodno, gamaPrethodno;
 
-int yMax = a1 + b1;
+int yMax = c + a2;
 int xMax = 2 * yMax;
 
 int krajnaVrednost;
@@ -77,7 +69,7 @@ int krajnaYKordinata;
 //
 
 void setup() {
-  //Serial.begin(9600);
+  Serial.begin(9600);
 
   servo1.attach(servo1Pin);
   servo2.attach(servo2Pin);
@@ -87,30 +79,8 @@ void setup() {
   delay(3000);
 
   // CRTANJE
-  /*
-
-  FUNKCIJATA crtajLinija PRIMA 4 ARGUMENTI:
-   -PRVIOT E POCETNATA X KOORDINATA NA LINIJATA (DA SE VNIMAVA DA NE SE ODI NADVOR OD OPSEGOT OD RAKATA (SLIKA 3))
-
-   -VTORIOT E POCETNATA Y KOORDINATA NA LINIJATA (DA SE VNIMAVA DA NE SE ODI NADVOR OD OPSEGOT OD RAKATA (SLIKA 3))
-
-   -TRETIOT E NASOKATA NA LINIJATA I MOZE DA BIDE:
-        -'u' ZA NAGORE
-        -'d' ZA NADOLU
-        -'l' ZA LEVO
-        -'r' ZA DESNO
-
-   -CETVRTIOT E DOLZINATA NA LINIJATA
-
-  PRIMER: crtajLinija(60, 10, 'u', 10) ke crta linija od (X = 60, Y = 10), do (X = 60, Y = 20)
-
-  */
-
-  // SO OVIE FUNKCII TREBA DA SE ISCRTA BUKVATA E rotriana za 90 stepeni na levo (Ш)
-  crtajLinija(50, 10, 'r', 20);
-  crtajLinija(70, 10, 'u', 10);
-  crtajLinija(60, 10, 'u', 10);
-  crtajLinija(50, 10, 'u', 10);
+  
+  crtajLinija(55, 10, 'r', 10);
 
   //
 
@@ -121,23 +91,14 @@ void loop() {
 }
 
 void servo1Agol(int agol){
-  if(minimalenAgolZaServo1 > agol) agol = minimalenAgolZaServo1;
-  if(maksimalenAgolZaServo1 < agol) agol = maksimalenAgolZaServo1;
-
   if(invertirajAgolNaServo1) servo1.write(180 - agol);
   else servo1.write(agol);
 }
 void servo2Agol(int agol){
-  if(minimalenAgolZaServo2 > agol) agol = minimalenAgolZaServo2;
-  if(maksimalenAgolZaServo2 < agol) agol = maksimalenAgolZaServo2;
-  
   if(invertirajAgolNaServo2) servo2.write(180 - agol);
   else servo2.write(agol);
 }
 void servo3Agol(int agol){
-  if(minimalenAgolZaServo3 > agol) agol = minimalenAgolZaServo3;
-  if(maksimalenAgolZaServo3 < agol) agol = maksimalenAgolZaServo3;
-  
   if(invertirajAgolNaServo3) servo3.write(180 - agol);
   else servo3.write(agol);
 }
@@ -171,7 +132,7 @@ void vratiNaPocetnaPozicija(bool soElevacija){
 
   pridviziServoMotori(pocetnaPozicijaZaServo1, pocetnaPozicijaZaServo2, pocetnaPozicijaZaServo3);
 
-  /*Serial.print("SERVO 1 AGOL: ");
+  Serial.print("SERVO 1 AGOL: ");
   Serial.println((int)pocetnaPozicijaZaServo1);
   Serial.flush();
 
@@ -184,48 +145,30 @@ void vratiNaPocetnaPozicija(bool soElevacija){
   Serial.flush();
 
   Serial.println("__________________________________");
-  Serial.flush();*/
+  Serial.flush();
 }
 
 void presmetajAgli(int x, int y){
-  x += greskaX;
-  y += greskaY;
-
   alfaPrethodno = alfa;
   betaPrethodno = beta;
   gamaPrethodno = gama;
 
-  a2 = greskaZ;
-  b2 = y;
+  b2 = sqrt(pow((x - yMax), 2) + y*y + greskaZ*greskaZ);
 
-  c = sqrt(pow((x - yMax), 2) + y*y + greskaZ*greskaZ);
-
-  alfa1 = acos((a1*a1 - b1*b1 - c*c) / (-2 * b1 * c));
-
-  beta = acos((c*c - a1*a1 - b1*b1) / (-2 * a1 * b1));
-
-  if(b2 == 0) alfa2 = 90;
-  else alfa2 = atan(a2 / b2);
-
-  if(y == 0 && x > yMax) gama = 180;
-  else if(y == 0) gama = 0;
-  else gama = atan(abs(yMax - x) / (float)y);
-
-  gama *= 180.0 / M_PI;
-
-  if(x > yMax) gama = 90 + gama;
-  else gama = 90 - gama;
-
+  alfa1 = 45 + greskaZ;
+  alfa2 = acos((a2*a2 - b2*b2 - c*c) / (-2 * b2 * c));
+  alfa2 *= 180.0 / M_PI;
   alfa = alfa1 + alfa2;
 
-  beta *= 180.0 / M_PI;
-  alfa *= 180.0 / M_PI;
+  beta1 = 180 - (90 + alfa1);
+  beta2 = acos((b2*b2 - a2*a2 - c*c) / (-2 * a2 * c));
+  beta2 *= 180.0 / M_PI;
+  beta = beta1 + beta2;
 
-  if(c > yMax){
-    alfa = alfaPrethodno;
-    beta = betaPrethodno;
-    gama = gamaPrethodno;
-  }
+  gama = atan(abs(yMax - x) / (float)y);
+  gama *= 180.0 / M_PI;
+  if(x > yMax) gama = 90 + gama;
+  else gama = 90 - gama;
 }
 
 void odiNaTocka(int x, int y){
@@ -240,7 +183,7 @@ void odiNaTocka(int x, int y){
 
   pridviziServoMotori(gama, alfa, beta);
 
-  /*Serial.print("X: ");
+  Serial.print("X: ");
   Serial.println(x);
   Serial.flush();
 
@@ -261,7 +204,7 @@ void odiNaTocka(int x, int y){
   Serial.flush();
 
   Serial.println("__________________________________");
-  Serial.flush();*/
+  Serial.flush();
 }
 
 void crtajLinija(int x, int y, char nasoka, int dolzina){
