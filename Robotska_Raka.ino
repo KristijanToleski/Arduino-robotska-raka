@@ -17,10 +17,11 @@
 #include <Servo.h>
 
 // PARAMETRI
-float a1 = 30; // RASTOJANIE OD 90 STEPENI AGOL DO SERVO 3 (SLIKA 2)
-float b1 = 30; // RASTOJANIE OD SERVO 2 DO 90 STEPENI AGOL (SLIKA 2)
-float a2 = 30; // RASTOJANIE OD SERVO 3 DO KRAJ NA PENKALOTO
+float a1 = 6.0; // RASTOJANIE OD SERVO 3 DO PENKALO VO CM //
+float b1 = 14.913; // RASTOJANIE OD SERVO 2 DO SERVO 3 VO CM //
 
+int greskaX = 0; // SLUZI ZA PODESUVANJE NA PENKALOTO (SLIKA 2)
+int greskaY = 0; // SLUZI ZA PODESUVANJE NA PENKALOTO (SLIKA 2)
 int greskaZ = 0; // SLUZI ZA PODESUVANJE NA PENKALOTO (SLIKA 2)
 
 int pocetnaPozicijaZaServo1 = 90; // AGOL NA SERVO 1 PRI VKLUCUVANJE NA PROGRAMATA, I OTKAKO KE SE IZVRSI PROGRAMATA
@@ -39,18 +40,18 @@ int elevacijaPriKrevanjeNaPenkalo = 10; // OVA KAZUVA KOLKU DA SE KRENE PENKALOT
 
 int brzinaNaDvizenjeNaRaka = 10; // POMALA VREDNOST RAKATA E POBRZA, POGOLEMA POSPORA
 
-int koordinatenOpsegZaX_Oska = 120; // KOORDINATATA DA BIDE PAREN BROJ, koordinatenOpsegZaX_Oska / koordinatenOpsegZaY_Oska == 2, koordinatenOpsegZaX_Oska >= (a1 + b1) * 2
-int koordinatenOpsegZaY_Oska = 60;  // KOORDINATATA DA BIDE PAREN BROJ, koordinatenOpsegZaY_Oska * 2 == koordinatenOpsegZaX_Oska, koordinatenOpsegZaY_Oska >= a1 + b1
+int koordinatenOpsegZaX_Oska = 1000; // KOORDINATATA DA BIDE PAREN BROJ, koordinatenOpsegZaX_Oska / koordinatenOpsegZaY_Oska == 2, koordinatenOpsegZaX_Oska >= (a1 + b1) * 2
+int koordinatenOpsegZaY_Oska = 500;  // KOORDINATATA DA BIDE PAREN BROJ, koordinatenOpsegZaY_Oska * 2 == koordinatenOpsegZaX_Oska, koordinatenOpsegZaY_Oska >= a1 + b1
 //
 
 // PROMENLIVI
 Servo servo1, servo2, servo3;
 
-float b2, c = sqrt(a1*a1 + b1*b1);
-float alfa1, alfa2, alfa = 90, beta1, beta2, beta = 90, gama = 90;
+float a2, b2, c;
+float alfa1, alfa2, alfa = 90, beta = 90, gama = 90;
 float alfaPrethodno, betaPrethodno, gamaPrethodno;
 
-int yMax = c + a2;
+int yMax = a1 + b1;
 int xMax = 2 * yMax;
 
 int krajnaVrednost;
@@ -79,8 +80,8 @@ void setup() {
   delay(3000);
 
   // CRTANJE
-  
-  crtajLinija(55, 10, 'r', 10);
+
+  crtajLinija(500, 350, 'u', 100);
 
   //
 
@@ -94,7 +95,7 @@ void servo1Agol(int agol){
   if(invertirajAgolNaServo1) servo1.write(180 - agol);
   else servo1.write(agol);
 }
-void servo2Agol(int agol){
+void servo2Agol(int agol){ 
   if(invertirajAgolNaServo2) servo2.write(180 - agol);
   else servo2.write(agol);
 }
@@ -149,32 +150,73 @@ void vratiNaPocetnaPozicija(bool soElevacija){
 }
 
 void presmetajAgli(int x, int y){
+  x += greskaX;
+  y += greskaY;
+
   alfaPrethodno = alfa;
   betaPrethodno = beta;
   gamaPrethodno = gama;
 
-  b2 = sqrt(pow((x - yMax), 2) + y*y + greskaZ*greskaZ);
+  a2 = greskaZ;
+  b2 = y;
 
-  alfa1 = 45 + greskaZ;
-  alfa2 = acos((a2*a2 - b2*b2 - c*c) / (-2 * b2 * c));
-  alfa2 *= 180.0 / M_PI;
-  alfa = alfa1 + alfa2;
+  c = sqrt(pow((x - yMax), 2) + y*y + greskaZ*greskaZ);
+  Serial.println("---------------------------");
+  Serial.flush();
 
-  beta1 = 180 - (90 + alfa1);
-  beta2 = acos((b2*b2 - a2*a2 - c*c) / (-2 * a2 * c));
-  beta2 *= 180.0 / M_PI;
-  beta = beta1 + beta2;
+  Serial.print("x: ");
+  Serial.println(x);
+  Serial.flush();
 
-  gama = atan(abs(yMax - x) / (float)y);
+  Serial.print("yMax: ");
+  Serial.println(yMax);
+  Serial.flush();
+
+  Serial.print("y: ");
+  Serial.println(y);
+  Serial.flush();
+
+  Serial.print("greskaZ: ");
+  Serial.println(greskaZ);
+  Serial.flush();
+
+  Serial.println("---------------------------");
+  Serial.flush();
+
+  alfa1 = acos((a1*a1 - b1*b1 - c*c) / (-2 * b1 * c));
+
+  beta = acos((c*c - a1*a1 - b1*b1) / (-2 * a1 * b1));
+
+  if(b2 == 0) alfa2 = 90;
+  else alfa2 = atan(a2 / b2);
+
+  if(y == 0 && x > yMax) gama = 180;
+  else if(y == 0) gama = 0;
+  else gama = atan(abs(yMax - x) / (float)y);
+
   gama *= 180.0 / M_PI;
+
   if(x > yMax) gama = 90 + gama;
   else gama = 90 - gama;
+
+  alfa = alfa1 + alfa2;
+
+  beta *= 180.0 / M_PI;
+  alfa *= 180.0 / M_PI;
+
+  if(c > yMax){
+    alfa = alfaPrethodno;
+    beta = betaPrethodno;
+    gama = gamaPrethodno;
+  }
 }
 
 void odiNaTocka(int x, int y){
   if(x == prethodnoX && y == prethodnoY) return;
   prethodnoX = x;
   prethodnoY = y;
+
+  int _x = x, _y = y;
 
   x = map(x, 0, koordinatenOpsegZaX_Oska, 0, xMax);
   y = map(y, 0, koordinatenOpsegZaY_Oska, 0, yMax);
@@ -184,11 +226,11 @@ void odiNaTocka(int x, int y){
   pridviziServoMotori(gama, alfa, beta);
 
   Serial.print("X: ");
-  Serial.println(x);
+  Serial.println(_x);
   Serial.flush();
 
   Serial.print("Y: ");
-  Serial.println(y);
+  Serial.println(_y);
   Serial.flush();
 
   Serial.print("SERVO 1 AGOL: ");
@@ -201,6 +243,14 @@ void odiNaTocka(int x, int y){
 
   Serial.print("SERVO 3 AGOL: ");
   Serial.println((int)beta);
+  Serial.flush();
+
+  Serial.print("c: ");
+  Serial.println(c, 2);
+  Serial.flush();
+
+  Serial.print("b2: ");
+  Serial.println(b2, 2);
   Serial.flush();
 
   Serial.println("__________________________________");
