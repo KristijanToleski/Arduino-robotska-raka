@@ -38,7 +38,7 @@ bool invertirajAgolNaServo3 = true; // AKO AGLITE NA SERVO 3 SE OBRATNI OD (SLIK
 
 int elevacijaPriKrevanjeNaPenkalo = 20; // OVA KAZUVA KOLKU DA SE KRENE PENKALOTO VO VIS PRI ODENJE DO ODREDENA TOCKA ZA CRTANJE
 
-int brzinaNaDvizenjeNaRaka = 0; // POMALA VREDNOST RAKATA E POBRZA, POGOLEMA POSPORA
+int brzinaNaDvizenjeNaRaka = 20; // POMALA VREDNOST RAKATA E POBRZA, POGOLEMA POSPORA
 
 int koordinatenOpsegZaX_Oska = 1000; // KOORDINATATA DA BIDE PAREN BROJ, koordinatenOpsegZaX_Oska / koordinatenOpsegZaY_Oska == 2, koordinatenOpsegZaX_Oska >= (a1 + b1) * 2
 int koordinatenOpsegZaY_Oska = 500;  // KOORDINATATA DA BIDE PAREN BROJ, koordinatenOpsegZaY_Oska * 2 == koordinatenOpsegZaX_Oska, koordinatenOpsegZaY_Oska >= a1 + b1
