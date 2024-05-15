@@ -17,8 +17,8 @@
 #include <Servo.h>
 
 // PARAMETRI
-float a1 = 6.0; // RASTOJANIE OD SERVO 3 DO PENKALO VO CM //
-float b1 = 14.913; // RASTOJANIE OD SERVO 2 DO SERVO 3 VO CM //
+float a1 = 11.5; // RASTOJANIE OD SERVO 3 DO PENKALO VO CM //
+float b1 = 15.24; // RASTOJANIE OD SERVO 2 DO SERVO 3 VO CM //
 
 int greskaX = 0; // SLUZI ZA PODESUVANJE NA PENKALOTO (SLIKA 2)
 int greskaY = 0; // SLUZI ZA PODESUVANJE NA PENKALOTO (SLIKA 2)
@@ -32,13 +32,13 @@ int servo1Pin = 9;
 int servo2Pin = 10;
 int servo3Pin = 11;
 
-bool invertirajAgolNaServo1 = false; // AKO AGLITE NA SERVO 1 SE OBRATNI OD (SLIKA 2) TOGAS PARAMETAROT DA E TRUE
+bool invertirajAgolNaServo1 = true; // AKO AGLITE NA SERVO 1 SE OBRATNI OD (SLIKA 2) TOGAS PARAMETAROT DA E TRUE
 bool invertirajAgolNaServo2 = false; // AKO AGLITE NA SERVO 2 SE OBRATNI OD (SLIKA 2) TOGAS PARAMETAROT DA E TRUE
-bool invertirajAgolNaServo3 = false; // AKO AGLITE NA SERVO 3 SE OBRATNI OD (SLIKA 2) TOGAS PARAMETAROT DA E TRUE
+bool invertirajAgolNaServo3 = true; // AKO AGLITE NA SERVO 3 SE OBRATNI OD (SLIKA 2) TOGAS PARAMETAROT DA E TRUE
 
-int elevacijaPriKrevanjeNaPenkalo = 10; // OVA KAZUVA KOLKU DA SE KRENE PENKALOTO VO VIS PRI ODENJE DO ODREDENA TOCKA ZA CRTANJE
+int elevacijaPriKrevanjeNaPenkalo = 20; // OVA KAZUVA KOLKU DA SE KRENE PENKALOTO VO VIS PRI ODENJE DO ODREDENA TOCKA ZA CRTANJE
 
-int brzinaNaDvizenjeNaRaka = 10; // POMALA VREDNOST RAKATA E POBRZA, POGOLEMA POSPORA
+int brzinaNaDvizenjeNaRaka = 0; // POMALA VREDNOST RAKATA E POBRZA, POGOLEMA POSPORA
 
 int koordinatenOpsegZaX_Oska = 1000; // KOORDINATATA DA BIDE PAREN BROJ, koordinatenOpsegZaX_Oska / koordinatenOpsegZaY_Oska == 2, koordinatenOpsegZaX_Oska >= (a1 + b1) * 2
 int koordinatenOpsegZaY_Oska = 500;  // KOORDINATATA DA BIDE PAREN BROJ, koordinatenOpsegZaY_Oska * 2 == koordinatenOpsegZaX_Oska, koordinatenOpsegZaY_Oska >= a1 + b1
@@ -48,11 +48,11 @@ int koordinatenOpsegZaY_Oska = 500;  // KOORDINATATA DA BIDE PAREN BROJ, koordin
 Servo servo1, servo2, servo3;
 
 float a2, b2, c;
-float alfa1, alfa2, alfa = 90, beta = 90, gama = 90;
+float alfa1, alfa2, alfa = pocetnaPozicijaZaServo2, beta = pocetnaPozicijaZaServo3, gama = pocetnaPozicijaZaServo1;
 float alfaPrethodno, betaPrethodno, gamaPrethodno;
 
-int yMax = a1 + b1;
-int xMax = 2 * yMax;
+float yMax = a1 + b1;
+float xMax = 2 * yMax;
 
 int krajnaVrednost;
 
@@ -81,7 +81,21 @@ void setup() {
 
   // CRTANJE
 
-  crtajLinija(500, 350, 'u', 100);
+  crtajLinija(610, 350, 'l', 100); // ﹉
+                                   // 
+                                   // 
+
+  crtajLinija(510, 350, 'd', 100); // ┊﹉
+                                   // ┊
+                                   // ┊
+
+  crtajLinija(510, 250, 'r', 100); // ┊﹉
+                                   // ┊
+                                   // ┊﹍
+
+  crtajLinija(510, 300, 'r', 100); // ┊﹉
+                                   // ┊┄┄
+                                   // ┊﹍
 
   //
 
@@ -305,6 +319,8 @@ void crtajLinija(int x, int y, char nasoka, int dolzina){
       odiNaTocka(i, y);
     }
   }
+
+  delay(500);
 }
 
 
