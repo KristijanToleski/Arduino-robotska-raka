@@ -17,12 +17,12 @@
 #include <Servo.h>
 
 // PARAMETRI
-float a1 = 11.5; // RASTOJANIE OD SERVO 3 DO PENKALO VO CM //
-float b1 = 15.24; // RASTOJANIE OD SERVO 2 DO SERVO 3 VO CM //
+float a1 = 11.0; // RASTOJANIE OD SERVO 3 DO PENKALO VO CM //
+float b1 = 15.0; // RASTOJANIE OD SERVO 2 DO SERVO 3 VO CM //
 
 int greskaX = 0; // SLUZI ZA PODESUVANJE NA PENKALOTO (SLIKA 2)
 int greskaY = 0; // SLUZI ZA PODESUVANJE NA PENKALOTO (SLIKA 2)
-int greskaZ = 0; // SLUZI ZA PODESUVANJE NA PENKALOTO (SLIKA 2)
+float greskaZ = 4.5; // SLUZI ZA PODESUVANJE NA PENKALOTO (SLIKA 2)
 
 int pocetnaPozicijaZaServo1 = 90; // AGOL NA SERVO 1 PRI VKLUCUVANJE NA PROGRAMATA, I OTKAKO KE SE IZVRSI PROGRAMATA
 int pocetnaPozicijaZaServo2 = 90; // AGOL NA SERVO 2 PRI VKLUCUVANJE NA PROGRAMATA, I OTKAKO KE SE IZVRSI PROGRAMATA
@@ -36,9 +36,9 @@ bool invertirajAgolNaServo1 = true; // AKO AGLITE NA SERVO 1 SE OBRATNI OD (SLIK
 bool invertirajAgolNaServo2 = false; // AKO AGLITE NA SERVO 2 SE OBRATNI OD (SLIKA 2) TOGAS PARAMETAROT DA E TRUE
 bool invertirajAgolNaServo3 = true; // AKO AGLITE NA SERVO 3 SE OBRATNI OD (SLIKA 2) TOGAS PARAMETAROT DA E TRUE
 
-int elevacijaPriKrevanjeNaPenkalo = 20; // OVA KAZUVA KOLKU DA SE KRENE PENKALOTO VO VIS PRI ODENJE DO ODREDENA TOCKA ZA CRTANJE
+int elevacijaPriKrevanjeNaPenkalo = 5; // OVA KAZUVA KOLKU DA SE KRENE PENKALOTO VO VIS PRI ODENJE DO ODREDENA TOCKA ZA CRTANJE
 
-int brzinaNaDvizenjeNaRaka = 20; // POMALA VREDNOST RAKATA E POBRZA, POGOLEMA POSPORA
+int brzinaNaDvizenjeNaRaka = 5; // POMALA VREDNOST RAKATA E POBRZA, POGOLEMA POSPORA
 
 int koordinatenOpsegZaX_Oska = 1000; // KOORDINATATA DA BIDE PAREN BROJ, koordinatenOpsegZaX_Oska / koordinatenOpsegZaY_Oska == 2, koordinatenOpsegZaX_Oska >= (a1 + b1) * 2
 int koordinatenOpsegZaY_Oska = 500;  // KOORDINATATA DA BIDE PAREN BROJ, koordinatenOpsegZaY_Oska * 2 == koordinatenOpsegZaX_Oska, koordinatenOpsegZaY_Oska >= a1 + b1
@@ -81,22 +81,32 @@ void setup() {
 
   // CRTANJE
 
-  crtajLinija(610, 350, 'l', 100); // ﹉
+  /*Serial.println("*****************LINIJA 1*****************");
+  crtajLinija(540, 450, 'l', 30); // ﹉
                                    // 
                                    // 
-
-  crtajLinija(510, 350, 'd', 100); // ┊﹉
+  Serial.println("*****************LINIJA 2*****************");
+  crtajLinija(510, 450, 'd', 60); // ┊﹉
                                    // ┊
                                    // ┊
-
-  crtajLinija(510, 250, 'r', 100); // ┊﹉
+  Serial.println("*****************LINIJA 3*****************");
+  crtajLinija(510, 390, 'r', 30); // ┊﹉
                                    // ┊
                                    // ┊﹍
-
-  crtajLinija(510, 300, 'r', 100); // ┊﹉
+  Serial.println("*****************LINIJA 4*****************");
+  crtajLinija(510, 424, 'r', 30); // ┊﹉
                                    // ┊┄┄
-                                   // ┊﹍
+                                   // ┊﹍*/
 
+
+
+  crtajLinija(530, 390, 'u', 60);
+                                   
+  crtajLinija(530, 450, 'l', 40); 
+
+  crtajLinija(490, 450, 'd', 60);
+
+  crtajLinija(500, 450, 'd', 60); 
   //
 
   vratiNaPocetnaPozicija(true);
@@ -198,7 +208,10 @@ void presmetajAgli(int x, int y){
   Serial.flush();
 
   alfa1 = acos((a1*a1 - b1*b1 - c*c) / (-2 * b1 * c));
+  //float a1 = 11.0; // RASTOJANIE OD SERVO 3 DO PENKALO VO CM //
+  //float b1 = 15.0; // RASTOJANIE OD SERVO 2 DO SERVO 3 VO CM //
 
+  
   beta = acos((c*c - a1*a1 - b1*b1) / (-2 * a1 * b1));
 
   if(b2 == 0) alfa2 = 90;
@@ -259,12 +272,24 @@ void odiNaTocka(int x, int y){
   Serial.println((int)beta);
   Serial.flush();
 
-  Serial.print("c: ");
-  Serial.println(c, 2);
+  Serial.print("a2: ");
+  Serial.println(a2, 3);
   Serial.flush();
 
   Serial.print("b2: ");
-  Serial.println(b2, 2);
+  Serial.println(b2, 3);
+  Serial.flush();
+
+  Serial.print("c: ");
+  Serial.println(c, 3);
+  Serial.flush();
+
+  Serial.print("alfa1: ");
+  Serial.println(alfa1, 3);
+  Serial.flush();
+
+  Serial.print("alfa2: ");
+  Serial.println(alfa2, 3);
   Serial.flush();
 
   Serial.println("__________________________________");
@@ -276,11 +301,13 @@ void crtajLinija(int x, int y, char nasoka, int dolzina){
     prethodnaGreskaZ = greskaZ;
     greskaZ += elevacijaPriKrevanjeNaPenkalo;
     odiNaTocka(x, y);
+    delay(500);
 
     prethodnoX = 0;
     prethodnoY = 0;
     greskaZ = prethodnaGreskaZ;
     odiNaTocka(x, y);
+    delay(500);
   }
 
   if(nasoka == 'u'){
@@ -320,17 +347,5 @@ void crtajLinija(int x, int y, char nasoka, int dolzina){
     }
   }
 
-  delay(500);
+  delay(1500);
 }
-
-
-
-
-
-
-
-
-
-
-
-
