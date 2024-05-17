@@ -22,7 +22,7 @@ float b1 = 15.0; // RASTOJANIE OD SERVO 2 DO SERVO 3 VO CM //
 
 int greskaX = 0; // SLUZI ZA PODESUVANJE NA PENKALOTO (SLIKA 2)
 int greskaY = 0; // SLUZI ZA PODESUVANJE NA PENKALOTO (SLIKA 2)
-float greskaZ = 4.5; // SLUZI ZA PODESUVANJE NA PENKALOTO (SLIKA 2)
+float greskaZ = 3.5; // SLUZI ZA PODESUVANJE NA PENKALOTO (SLIKA 2)
 
 int pocetnaPozicijaZaServo1 = 90; // AGOL NA SERVO 1 PRI VKLUCUVANJE NA PROGRAMATA, I OTKAKO KE SE IZVRSI PROGRAMATA
 int pocetnaPozicijaZaServo2 = 90; // AGOL NA SERVO 2 PRI VKLUCUVANJE NA PROGRAMATA, I OTKAKO KE SE IZVRSI PROGRAMATA
@@ -36,9 +36,9 @@ bool invertirajAgolNaServo1 = true; // AKO AGLITE NA SERVO 1 SE OBRATNI OD (SLIK
 bool invertirajAgolNaServo2 = false; // AKO AGLITE NA SERVO 2 SE OBRATNI OD (SLIKA 2) TOGAS PARAMETAROT DA E TRUE
 bool invertirajAgolNaServo3 = true; // AKO AGLITE NA SERVO 3 SE OBRATNI OD (SLIKA 2) TOGAS PARAMETAROT DA E TRUE
 
-int elevacijaPriKrevanjeNaPenkalo = 5; // OVA KAZUVA KOLKU DA SE KRENE PENKALOTO VO VIS PRI ODENJE DO ODREDENA TOCKA ZA CRTANJE
+int elevacijaPriKrevanjeNaPenkalo = 4; // OVA KAZUVA KOLKU DA SE KRENE PENKALOTO VO VIS PRI ODENJE DO ODREDENA TOCKA ZA CRTANJE
 
-int brzinaNaDvizenjeNaRaka = 5; // POMALA VREDNOST RAKATA E POBRZA, POGOLEMA POSPORA
+int brzinaNaDvizenjeNaRaka = 25; // POMALA VREDNOST RAKATA E POBRZA, POGOLEMA POSPORA
 
 int koordinatenOpsegZaX_Oska = 1000; // KOORDINATATA DA BIDE PAREN BROJ, koordinatenOpsegZaX_Oska / koordinatenOpsegZaY_Oska == 2, koordinatenOpsegZaX_Oska >= (a1 + b1) * 2
 int koordinatenOpsegZaY_Oska = 500;  // KOORDINATATA DA BIDE PAREN BROJ, koordinatenOpsegZaY_Oska * 2 == koordinatenOpsegZaX_Oska, koordinatenOpsegZaY_Oska >= a1 + b1
@@ -81,32 +81,140 @@ void setup() {
 
   // CRTANJE
 
-  /*Serial.println("*****************LINIJA 1*****************");
-  crtajLinija(540, 450, 'l', 30); // ﹉
-                                   // 
-                                   // 
+  // LINIJA HORIZONTALNA 3CM 
+  //crtajLinija(540, 350, 'l', 28);
+
+
+  /* BUKVATA A PRAVILNO
+   * Serial.println("*****************LINIJA 1*****************");
+    greskaZ -= 1;
+    crtajLinija(521, 350, 'd', 80); 
+    
+    Serial.println("*****************LINIJA 2*****************");
+    greskaZ += 1;
+    crtajLinija(521, 350, 'l', 22); 
+    
+    Serial.println("*****************LINIJA 3*****************");
+    greskaZ -= 1;
+    crtajLinija(499, 350, 'd', 80); 
+                                     
+    Serial.println("*****************LINIJA 4*****************");
+    crtajLinija(521, 325, 'l', 22);
+   */
+
+  /* A 90 stepeni nadesno
+   * greskaZ -= 1;
+    crtajLinija(521, 350, 'd', 80); 
+    
+    Serial.println("*****************LINIJA 2*****************");
+    crtajLinija(521, 270, 'l', 22); 
+    
+    Serial.println("*****************LINIJA 3*****************");
+    crtajLinija(521, 350, 'l', 22); 
+                                     
+    Serial.println("*****************LINIJA 4*****************");
+    crtajLinija(510, 350, 'd', 80);
+  */
+
+  /* A 90 na levo
+     *  greskaZ -= 1;
+        crtajLinija(499, 350, 'd', 80); 
+        
+        Serial.println("*****************LINIJA 2*****************");
+        crtajLinija(499, 270, 'r', 22); 
+        
+        Serial.println("*****************LINIJA 3*****************");
+        greskaZ += 1;
+        crtajLinija(521, 350, 'l', 22); 
+                                         
+        Serial.println("*****************LINIJA 4*****************");
+        greskaZ -= 1;
+        crtajLinija(510, 350, 'd', 80);
+     */
+
+  /* A 180 stepeni
+     * greskaZ -= 1;
+      crtajLinija(521, 350, 'd', 80); 
+      
+      Serial.println("*****************LINIJA 2*****************");
+      crtajLinija(521, 270, 'l', 22); 
+      
+      Serial.println("*****************LINIJA 3*****************");
+      crtajLinija(499, 350, 'd', 80); 
+                                       
+      Serial.println("*****************LINIJA 4*****************");
+      crtajLinija(499, 310, 'r', 22);
+     */
+
+  /*  E
+ *  greskaZ -= 1;
+    crtajLinija(499, 350, 'd', 80); 
+    
+    Serial.println("*****************LINIJA 2*****************");
+    crtajLinija(499, 270, 'r', 22); 
+    
+    Serial.println("*****************LINIJA 3*****************");
+    greskaZ += 1;
+    crtajLinija(521, 350, 'l', 22); 
+                                     
+    Serial.println("*****************LINIJA 4*****************");
+    greskaZ -= 1;
+    crtajLinija(499, 310, 'r', 22);
+ */
+
+  /* M
+   * Serial.println("*****************LINIJA 1*****************");
+  greskaZ -= 1;
+  crtajLinija(521, 350, 'd', 80); 
+  
   Serial.println("*****************LINIJA 2*****************");
-  crtajLinija(510, 450, 'd', 60); // ┊﹉
-                                   // ┊
-                                   // ┊
+  greskaZ += 1;
+  crtajLinija(521, 350, 'l', 22); 
+  
   Serial.println("*****************LINIJA 3*****************");
-  crtajLinija(510, 390, 'r', 30); // ┊﹉
-                                   // ┊
-                                   // ┊﹍
-  Serial.println("*****************LINIJA 4*****************");
-  crtajLinija(510, 424, 'r', 30); // ┊﹉
-                                   // ┊┄┄
-                                   // ┊﹍*/
-
-
-
-  crtajLinija(530, 390, 'u', 60);
+  greskaZ -= 1;
+  crtajLinija(499, 350, 'd', 80); 
                                    
-  crtajLinija(530, 450, 'l', 40); 
+  Serial.println("*****************LINIJA 4*****************");
+  crtajLinija(510, 350, 'd', 80); */
 
-  crtajLinija(490, 450, 'd', 60);
+  /* Ш
+   * Serial.println("*****************LINIJA 1*****************");
+    greskaZ -= 1;
+    crtajLinija(521, 350, 'd', 80); 
+    
+    Serial.println("*****************LINIJA 2*****************");
+    crtajLinija(521, 270, 'l', 22); 
+    
+    Serial.println("*****************LINIJA 3*****************");
+    crtajLinija(499, 350, 'd', 80); 
+                                     
+    Serial.println("*****************LINIJA 4*****************");
+    crtajLinija(510, 350, 'd', 80);
+   */ 
 
-  crtajLinija(500, 450, 'd', 60); 
+   /*Ш 90 na levo
+     * 
+
+      Serial.println("*****************LINIJA 1*****************");
+      greskaZ -= 1;
+      crtajLinija(521, 350, 'd', 80); 
+      
+      Serial.println("*****************LINIJA 2*****************");
+      crtajLinija(521, 270, 'l', 22); 
+      
+      Serial.println("*****************LINIJA 3*****************");
+      greskaZ += 1;
+      crtajLinija(499, 350, 'r', 22);
+      
+      Serial.println("*****************LINIJA 4*****************");
+      crtajLinija(521, 310, 'l', 22); 
+     */
+      
+    
+        
+  
+
   //
 
   vratiNaPocetnaPozicija(true);
