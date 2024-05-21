@@ -1,57 +1,37 @@
-/*
-
--BALKAN JUNIOR ROBOTSKA RAKA PROGRAMA 2024
--PROGRAMATA IZRABOTENA OD KRISTIJAN TOLESKI
-
--KORISTENITE FORMULI MOZE DA GI NAJDETE VO (SLIKA 1)
-
--VO PREDELOT PARAMETRI SE MESTAT PARAMETRITE NA RAKATA I SERVO MOTORITE
--VO PREDELOT CRTANJE SE CRTAAT LINIITE (PODOLU OBJASNATO KAKO)
-
--KORISTENA BIBLIOTEKA: https://www.arduino.cc/reference/en/libraries/servo/
-
--ZA TESTIRANJE KORISTEN E SLEDNIOV SIMULATOR NA ROBOTSKA RAKA: https://balkan-junior-robotska-raka.netlify.app
-
-*/
-
 #include <Servo.h>
 
-// PARAMETRI
-float a1 = 11.0; // RASTOJANIE OD SERVO 3 DO PENKALO VO CM //
-float b1 = 15.0; // RASTOJANIE OD SERVO 2 DO SERVO 3 VO CM //
+float a1 = 11.0;
+float b1 = 15.0;
 
-float greskaZ = 3.5; // SLUZI ZA PODESUVANJE NA PENKALOTO (SLIKA 2)
+float greskaZ = 3.5;
 
-int pocetnaPozicijaZaServo1 = 90; // AGOL NA SERVO 1 PRI VKLUCUVANJE NA PROGRAMATA, I OTKAKO KE SE IZVRSI PROGRAMATA
-int pocetnaPozicijaZaServo2 = 90; // AGOL NA SERVO 2 PRI VKLUCUVANJE NA PROGRAMATA, I OTKAKO KE SE IZVRSI PROGRAMATA
-int pocetnaPozicijaZaServo3 = 180; // AGOL NA SERVO 3 PRI VKLUCUVANJE NA PROGRAMATA, I OTKAKO KE SE IZVRSI PROGRAMATA
+int pocetnaPozicijaZaServo1 = 90;
+int pocetnaPozicijaZaServo2 = 90;
+int pocetnaPozicijaZaServo3 = 180;
 
 int servo1Pin = 9;
 int servo2Pin = 10;
 int servo3Pin = 11;
 
-int elevacijaPriKrevanjeNaPenkalo = 4; // OVA KAZUVA KOLKU DA SE KRENE PENKALOTO VO VIS PRI ODENJE DO ODREDENA TOCKA ZA CRTANJE
+int elevacijaPriKrevanjeNaPenkalo = 4;
 
-int brzinaNaDvizenjeNaRaka = 25; // POMALA VREDNOST RAKATA E POBRZA, POGOLEMA POSPORA
+int brzinaNaDvizenjeNaRaka = 25;
 
-int koordinatenOpsegZaX_Oska = 1000; // KOORDINATATA DA BIDE PAREN BROJ, koordinatenOpsegZaX_Oska / koordinatenOpsegZaY_Oska == 2, koordinatenOpsegZaX_Oska >= (a1 + b1) * 2
-int koordinatenOpsegZaY_Oska = 500;  // KOORDINATATA DA BIDE PAREN BROJ, koordinatenOpsegZaY_Oska * 2 == koordinatenOpsegZaX_Oska, koordinatenOpsegZaY_Oska >= a1 + b1
-//
+int koordinatenOpsegZaX_Oska = 1000;
+int koordinatenOpsegZaY_Oska = 500;
 
-// PROMENLIVI
+
 Servo servo1, servo2, servo3;
 
 float a2, b2, c;
 float alfa1, alfa2, alfa = pocetnaPozicijaZaServo2, beta = pocetnaPozicijaZaServo3, gama = pocetnaPozicijaZaServo1;
-float alfaPrethodno, betaPrethodno, gamaPrethodno;
 
 float yMax = a1 + b1;
 float xMax = 2 * yMax;
 
 int krajnaVrednost;
 
-int prethodnoX = 0;
-int prethodnoY = 0;
+int prethodnoX = 0, prethodnoY = 0;
 
 int prethodnaGreskaZ;
 
@@ -59,9 +39,7 @@ int prethodnaPozicijaNaServo1 = pocetnaPozicijaZaServo1;
 int prethodnaPozicijaNaServo2 = pocetnaPozicijaZaServo2;
 int prethodnaPozicijaNaServo3 = pocetnaPozicijaZaServo3;
 
-int krajnaXKordinata;
-int krajnaYKordinata;
-//
+int krajnaXKordinata, krajnaYKordinata;
 
 void setup() {
   servo1.attach(servo1Pin);
@@ -73,139 +51,7 @@ void setup() {
 
   // CRTANJE
 
-  // LINIJA HORIZONTALNA 3CM 
-  //crtajLinija(540, 350, 'l', 28);
 
-
-  /* BUKVATA A PRAVILNO
-   * Serial.println("*****************LINIJA 1*****************");
-    greskaZ -= 1;
-    crtajLinija(521, 350, 'd', 80); 
-    
-    Serial.println("*****************LINIJA 2*****************");
-    greskaZ += 1;
-    crtajLinija(521, 350, 'l', 22); 
-    
-    Serial.println("*****************LINIJA 3*****************");
-    greskaZ -= 1;
-    crtajLinija(499, 350, 'd', 80); 
-                                     
-    Serial.println("*****************LINIJA 4*****************");
-    crtajLinija(521, 325, 'l', 22);
-   */
-
-  /* A 90 stepeni nadesno
-   * greskaZ -= 1;
-    crtajLinija(521, 350, 'd', 80); 
-    
-    Serial.println("*****************LINIJA 2*****************");
-    crtajLinija(521, 270, 'l', 22); 
-    
-    Serial.println("*****************LINIJA 3*****************");
-    crtajLinija(521, 350, 'l', 22); 
-                                     
-    Serial.println("*****************LINIJA 4*****************");
-    crtajLinija(510, 350, 'd', 80);
-  */
-
-  /* A 90 na levo
-     *  greskaZ -= 1;
-        crtajLinija(499, 350, 'd', 80); 
-        
-        Serial.println("*****************LINIJA 2*****************");
-        crtajLinija(499, 270, 'r', 22); 
-        
-        Serial.println("*****************LINIJA 3*****************");
-        greskaZ += 1;
-        crtajLinija(521, 350, 'l', 22); 
-                                         
-        Serial.println("*****************LINIJA 4*****************");
-        greskaZ -= 1;
-        crtajLinija(510, 350, 'd', 80);
-     */
-
-  /* A 180 stepeni
-     * greskaZ -= 1;
-      crtajLinija(521, 350, 'd', 80); 
-      
-      Serial.println("*****************LINIJA 2*****************");
-      crtajLinija(521, 270, 'l', 22); 
-      
-      Serial.println("*****************LINIJA 3*****************");
-      crtajLinija(499, 350, 'd', 80); 
-                                       
-      Serial.println("*****************LINIJA 4*****************");
-      crtajLinija(499, 310, 'r', 22);
-     */
-
-  /*  E
- *  greskaZ -= 1;
-    crtajLinija(499, 350, 'd', 80); 
-    
-    Serial.println("*****************LINIJA 2*****************");
-    crtajLinija(499, 270, 'r', 22); 
-    
-    Serial.println("*****************LINIJA 3*****************");
-    greskaZ += 1;
-    crtajLinija(521, 350, 'l', 22); 
-                                     
-    Serial.println("*****************LINIJA 4*****************");
-    greskaZ -= 1;
-    crtajLinija(499, 310, 'r', 22);
- */
-
-  /* M
-   * Serial.println("*****************LINIJA 1*****************");
-  greskaZ -= 1;
-  crtajLinija(521, 350, 'd', 80); 
-  
-  Serial.println("*****************LINIJA 2*****************");
-  greskaZ += 1;
-  crtajLinija(521, 350, 'l', 22); 
-  
-  Serial.println("*****************LINIJA 3*****************");
-  greskaZ -= 1;
-  crtajLinija(499, 350, 'd', 80); 
-                                   
-  Serial.println("*****************LINIJA 4*****************");
-  crtajLinija(510, 350, 'd', 80); */
-
-  /* Ш
-   * Serial.println("*****************LINIJA 1*****************");
-    greskaZ -= 1;
-    crtajLinija(521, 350, 'd', 80); 
-    
-    Serial.println("*****************LINIJA 2*****************");
-    crtajLinija(521, 270, 'l', 22); 
-    
-    Serial.println("*****************LINIJA 3*****************");
-    crtajLinija(499, 350, 'd', 80); 
-                                     
-    Serial.println("*****************LINIJA 4*****************");
-    crtajLinija(510, 350, 'd', 80);
-   */ 
-
-   /*Ш 90 na levo
-     * 
-
-      Serial.println("*****************LINIJA 1*****************");
-      greskaZ -= 1;
-      crtajLinija(521, 350, 'd', 80); 
-      
-      Serial.println("*****************LINIJA 2*****************");
-      crtajLinija(521, 270, 'l', 22); 
-      
-      Serial.println("*****************LINIJA 3*****************");
-      greskaZ += 1;
-      crtajLinija(499, 350, 'r', 22);
-      
-      Serial.println("*****************LINIJA 4*****************");
-      crtajLinija(521, 310, 'l', 22); 
-     */
-      
-    
-        
-  
 
   //
 
@@ -228,7 +74,7 @@ void servo3Agol(int agol){
 void pridviziServoMotori(int servoAgol1, int servoAgol2, int servoAgol3){
   if(prethodnaPozicijaNaServo1 == servoAgol1 && prethodnaPozicijaNaServo2 == servoAgol2 && prethodnaPozicijaNaServo3 == servoAgol3) return;
 
-  for(int i = 0; i <= 100; i++){
+  for(int i = 1; i <= 100; i++){
     servo2Agol(prethodnaPozicijaNaServo2 + ((servoAgol2 - prethodnaPozicijaNaServo2) * i / 100.0));
     servo3Agol(prethodnaPozicijaNaServo3 + ((servoAgol3 - prethodnaPozicijaNaServo3) * i / 100.0));
     servo1Agol(prethodnaPozicijaNaServo1 + ((servoAgol1 - prethodnaPozicijaNaServo1) * i / 100.0));
@@ -245,11 +91,10 @@ void vratiNaPocetnaPozicija(bool soElevacija){
   if(soElevacija){
     prethodnaGreskaZ = greskaZ;
     greskaZ += elevacijaPriKrevanjeNaPenkalo;
-    prethodnoX = 0;
-    prethodnoY = 0;
-
     odiNaTocka(krajnaXKordinata, krajnaYKordinata);
     greskaZ = prethodnaGreskaZ;
+
+    return;
   }
 
   pridviziServoMotori(pocetnaPozicijaZaServo1, pocetnaPozicijaZaServo2, pocetnaPozicijaZaServo3);
